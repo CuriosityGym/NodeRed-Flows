@@ -1,0 +1,100 @@
+[
+    {
+        "id": "29974a7c.e4d026",
+        "type": "tab",
+        "label": "Bitcoin LED"
+    },
+    {
+        "id": "cd3662d2.159f6",
+        "type": "inject",
+        "z": "29974a7c.e4d026",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 210,
+        "y": 60,
+        "wires": [
+            [
+                "96a5bfdb.0bfc4"
+            ]
+        ]
+    },
+    {
+        "id": "434158c5.5ba9d8",
+        "type": "debug",
+        "z": "29974a7c.e4d026",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 910,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "96a5bfdb.0bfc4",
+        "type": "http request",
+        "z": "29974a7c.e4d026",
+        "name": "Bitcoin Data Fetch",
+        "method": "GET",
+        "ret": "txt",
+        "url": "https://blockchain.info/ticker",
+        "tls": "",
+        "x": 410,
+        "y": 60,
+        "wires": [
+            [
+                "155de197.d94cce"
+            ]
+        ]
+    },
+    {
+        "id": "155de197.d94cce",
+        "type": "function",
+        "z": "29974a7c.e4d026",
+        "name": "ParseJson",
+        "func": "var json=JSON.parse(msg.payload);\nvar USDOBJ=json.USD;\nvar Price=USDOBJ[\"15m\"];\nvar priceJson= {payload:Price};\nif(Price >= 2729)\n{\n  pinState=0;  \n}\nelse\n{\n    pinState=1;\n}\n\nvar pinStateJson={payload:pinState};\nreturn [priceJson,pinStateJson];\n",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 630,
+        "y": 60,
+        "wires": [
+            [
+                "434158c5.5ba9d8"
+            ],
+            [
+                "56701110.64af1",
+                "39d5ec96.c89294"
+            ]
+        ]
+    },
+    {
+        "id": "39d5ec96.c89294",
+        "type": "rpi-gpio out",
+        "z": "29974a7c.e4d026",
+        "name": "LED",
+        "pin": "7",
+        "set": true,
+        "level": "0",
+        "out": "out",
+        "x": 890,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "56701110.64af1",
+        "type": "debug",
+        "z": "29974a7c.e4d026",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 910,
+        "y": 100,
+        "wires": []
+    }
+]
